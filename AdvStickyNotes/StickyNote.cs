@@ -13,6 +13,7 @@ namespace AdvStickyNotes
     {
         RichTextBox textBox1;
         Button closeBtn;
+        Button addBtn;
 
         public StickyNote()
         {
@@ -37,8 +38,25 @@ namespace AdvStickyNotes
             closeBtn.FlatStyle = FlatStyle.Flat;
             closeBtn.FlatAppearance.BorderSize = 0;
 
+            addBtn = new Button();
+            addBtn.Location = new Point(0, 0);
+            addBtn.Size = new Size(20, 20);
+            addBtn.Text = "+";
+            addBtn.Click += AddBtn_Click;
+            addBtn.FlatStyle = FlatStyle.Flat;
+            addBtn.FlatAppearance.BorderSize = 0;
+
+            
+
             this.Controls.Add(textBox1);
             this.Controls.Add(closeBtn);
+            this.Controls.Add(addBtn);
+        }
+
+        private void AddBtn_Click(object sender, EventArgs e)
+        {
+            new StickyNote().Show();
+
         }
 
         private void CloseBtn_Click(object sender, EventArgs e)
