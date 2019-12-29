@@ -17,12 +17,11 @@ namespace AdvStickyNotes
 
         public StickyNote()
         {
+            
             InitializeComponent();
-            this.BackColor = Color.FromArgb(248,247,182);
-        }
+            Visible = true;
+            BackColor = Color.FromArgb(248, 247, 182);
 
-        private void StickyNote_Load(object sender, EventArgs e)
-        {
             textBox1 = new RichTextBox();
             textBox1.Location = new Point(0, 20);
             textBox1.Width = Size.Width;
@@ -31,7 +30,7 @@ namespace AdvStickyNotes
             textBox1.BackColor = Color.FromArgb(248, 247, 182);
 
             closeBtn = new Button();
-            closeBtn.Location = new Point(Size.Width-20, 0);
+            closeBtn.Location = new Point(Size.Width - 20, 0);
             closeBtn.Size = new Size(20, 20);
             closeBtn.Text = "X";
             closeBtn.Click += CloseBtn_Click;
@@ -46,12 +45,16 @@ namespace AdvStickyNotes
             addBtn.FlatStyle = FlatStyle.Flat;
             addBtn.FlatAppearance.BorderSize = 0;
 
-            
-
             this.Controls.Add(textBox1);
             this.Controls.Add(closeBtn);
             this.Controls.Add(addBtn);
+
         }
+        private void StickyNote_Shown(object sender, EventArgs e)
+        {
+            MessageBox.Show("StickyNote_Load 이벤트 발생!");
+        }
+
 
         private void AddBtn_Click(object sender, EventArgs e)
         {
@@ -63,6 +66,6 @@ namespace AdvStickyNotes
         {
             Close();
         }
-        
+
     }
 }
