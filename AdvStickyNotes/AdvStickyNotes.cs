@@ -16,11 +16,12 @@ namespace AdvStickyNotes
         {
             InitializeComponent();
             stickyNotes = new List<StickyNote>();
+            Visible = false;
         }
 
         private void StickyNote_Shown(object sender, EventArgs e)
         {
-            stickyNotes.Add(new StickyNote());
+            stickyNotes.Add(new StickyNote(this));
             stickyNotes[0].Show();
             Size = new Size(0, 0);
             
@@ -28,14 +29,16 @@ namespace AdvStickyNotes
             
         }
 
-        public void deleteNote()
+        public bool closeNote()
         {
-            stickyNotes
+            return false;
         }
 
-        public void addStickyNote()
+        public void addNote()
         {
-            //new StickyNote().Show();
+            stickyNotes.Add(new StickyNote(this));
+            stickyNotes.Last<StickyNote>().Show();
+            MessageBox.Show("노트 갯수: "+stickyNotes.Count()+"개!");
         }
         
     }
