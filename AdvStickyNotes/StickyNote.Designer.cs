@@ -37,6 +37,7 @@
             this.ClientSize = new System.Drawing.Size(224, 181);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "StickyNote";
+            this.ShowInTaskbar = false;
             this.ResumeLayout(false);
 
         }

@@ -9,9 +9,12 @@ using System.Windows.Forms;
 
 namespace AdvStickyNotes
 {
+    [Serializable]
     public partial class StickyNote : Form
     {
         AdvStickyNotes parent;
+        private bool isMouseDown;
+        private Point mouseDownPoint;
         public StickyNote(AdvStickyNotes p)
         {
             InitializeComponent();
@@ -28,6 +31,11 @@ namespace AdvStickyNotes
                 Height = 20,
                 BackColor = Color.FromArgb(0, 247, 182)
             };
+            isMouseDown = false;
+            mover.MouseDown += Mover_MouseDown;
+            mover.MouseMove += Mover_MouseMove;
+            mover.MouseUp += Mover_MouseUp;
+            
 
             //메모 영역 텍스트박스
             RichTextBox textBox = new RichTextBox
@@ -67,13 +75,33 @@ namespace AdvStickyNotes
             this.Controls.Add(addBtn);
             mover.SendToBack();
         }
+
+        private void Mover_MouseUp(object sender, MouseEventArgs e)
+        {
+            isMouseDown = false;
+        }
+
+        private void Mover_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(isMouseDown == false) { return; }
+            int x = Location.X + (e.Location.X - mouseDownPoint.X);
+            int y = Location.Y + (e.Location.Y - mouseDownPoint.Y);
+            Location = new Point(x, y);
+        }
+
+        private void Mover_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDownPoint = e.Location;
+            isMouseDown = true;
+        }
+
         private void AddBtn_Click(object sender, EventArgs e)
         {
             parent.addNote();
         }
         private void CloseBtn_Click(object sender, EventArgs e)
         {
-            if (parent.closeNote())
+            if (parent.closeNote(this))
             {
                 Close();
             }
