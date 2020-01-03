@@ -42,7 +42,8 @@
             this.Name = "AdvStickyNotes";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Shown += new System.EventHandler(this.StickyNote_Shown);
+            this.Load += new System.EventHandler(this.AdvStickyNotes_Load);
+            this.Shown += new System.EventHandler(this.AdvStickyNotes_Shown);
             this.ResumeLayout(false);
 
         }
