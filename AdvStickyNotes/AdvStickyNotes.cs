@@ -12,27 +12,28 @@ using Threading = System.Threading;
 
 namespace AdvStickyNotes
 {
-    [Serializable]
     public partial class AdvStickyNotes : Form
     {
         public List<StickyNote> stickyNotes;
         private Stream data;
-        [NonSerialized] private Threading.Timer saveTimer;
+        private BinaryFormatter serializer;
+        private Timer saveTimer;
         public AdvStickyNotes()
         {
             InitializeComponent();
         }
         private void AdvStickyNotes_Load(object sender, EventArgs e)
         {
+            serializer = new BinaryFormatter();
             try
             {
                 data = new FileStream("data.dat", FileMode.OpenOrCreate);
-                if (data.Length == 0) return;
-                
-                BinaryFormatter serializer = new BinaryFormatter();
-                stickyNotes = (List<StickyNote>)serializer.Deserialize(data);
+                if (data.Length != 0)
+                {
+                    stickyNotes = (List<StickyNote>)serializer.Deserialize(data);
+                    MessageBox.Show("불러오기 완료!");
+                }
                 data.Close();
-                MessageBox.Show("불러오기 완료!");
             }
             catch (Exception ex)
             {
@@ -40,7 +41,9 @@ namespace AdvStickyNotes
                 throw ex;
             }
 
-            saveTimer = new System.Threading.Timer(new System.Threading.TimerCallback(saveTimerProc));
+            saveTimer = new Timer();
+            saveTimer.Interval = 2000;
+            saveTimer.Tick += SaveTimer_Tick;
         }
         private void AdvStickyNotes_Shown(object sender, EventArgs e)
         {
@@ -48,18 +51,34 @@ namespace AdvStickyNotes
             Visible = false;
             ShowInTaskbar = true;
 
-            stickyNotes = new List<StickyNote>(); 
-            stickyNotes.Add(new StickyNote(this));
-            stickyNotes[0].Show();
+            if (stickyNotes == null)
+            {
+                stickyNotes = new List<StickyNote>();
+                stickyNotes.Add(new StickyNote(this));
+                stickyNotes[0].Show();
+            }
+            else
+            {
+                foreach(StickyNote stickyNote in stickyNotes)
+                {
+                    stickyNote.Show();
+                }
+            }
         }
-        public void saveData()
+        public void saveData(NoteData noteData)
         {
-            //saveTimer.Change     -------------여기 작성중이야!
+            saveTimer.Stop();
+            saveTimer.Start();
         }
-        private void saveTimerProc(object state)
+        private void SaveTimer_Tick(object sender, EventArgs e)
         {
-            Threading.Timer t = (Threading.Timer) state;
-            
+            saveTimer.Stop();
+            data = new FileStream("data.dat", FileMode.OpenOrCreate);
+            serializer.Serialize(data, stickyNotes);
+            data.Close();
+
+            MessageBox.Show("저장!");
+
         }
         public bool closeNote(StickyNote note)
         {

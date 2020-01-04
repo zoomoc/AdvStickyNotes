@@ -49,6 +49,7 @@
     <Compile Include="AdvStickyNotes.Designer.cs">
       <DependentUpon>AdvStickyNotes.cs</DependentUpon>
     </Compile>
+    <Compile Include="NoteData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StickyNote.cs">
