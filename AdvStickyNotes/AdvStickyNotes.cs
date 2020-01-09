@@ -30,7 +30,16 @@ namespace AdvStickyNotes
                 data = new FileStream("data.dat", FileMode.OpenOrCreate);
                 if (data.Length != 0)
                 {
-                    stickyNotes = (List<StickyNote>)serializer.Deserialize(data);
+                    List<NoteData> noteDatas = new List<NoteData>((List<NoteData>)serializer.Deserialize(data));
+                    stickyNotes = new List<StickyNote>();
+
+                    foreach (NoteData noteData in noteDatas)
+                    {
+                        stickyNotes.Add(new StickyNote(this));
+                        stickyNotes.Last().noteData = noteData;
+
+                        MessageBox.Show("noteData: " + noteData.ToString());
+                    }
                     MessageBox.Show("불러오기 완료!");
                 }
                 data.Close();
@@ -55,7 +64,7 @@ namespace AdvStickyNotes
             {
                 stickyNotes = new List<StickyNote>();
                 stickyNotes.Add(new StickyNote(this));
-                stickyNotes[0].Show();
+                stickyNotes.First().Show();
             }
             else
             {
@@ -65,7 +74,7 @@ namespace AdvStickyNotes
                 }
             }
         }
-        public void saveData(NoteData noteData)
+        public void saveData(StickyNote sender, NoteData noteData)
         {
             saveTimer.Stop();
             saveTimer.Start();
@@ -73,8 +82,14 @@ namespace AdvStickyNotes
         private void SaveTimer_Tick(object sender, EventArgs e)
         {
             saveTimer.Stop();
+
+            List<NoteData> noteDatas = new List<NoteData>();
+            foreach (StickyNote stickyNote in stickyNotes)
+            {
+                noteDatas.Add(stickyNote.noteData);
+            }
             data = new FileStream("data.dat", FileMode.OpenOrCreate);
-            serializer.Serialize(data, stickyNotes);
+            serializer.Serialize(data, noteDatas);
             data.Close();
 
             MessageBox.Show("저장!");
@@ -93,7 +108,7 @@ namespace AdvStickyNotes
         public void addNote()
         {
             stickyNotes.Add(new StickyNote(this));
-            stickyNotes.Last<StickyNote>().Show();
+            stickyNotes.Last().Show();
         }
     }
 }

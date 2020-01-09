@@ -17,13 +17,13 @@ namespace AdvStickyNotes
         private int titleHeight = 30;
 
         RichTextBox textBox;
-        NoteData noteData;
+        public NoteData noteData;
 
-        public StickyNote(AdvStickyNotes p)
+        public StickyNote(AdvStickyNotes p, NoteData nd = new NoteData())
         {
 
             InitializeComponent();
-            FormClosed += StickyNote_FormClosed;
+            
             BackColor = Color.FromArgb(253, 253, 201);
             Visible = true;
 
@@ -84,11 +84,24 @@ namespace AdvStickyNotes
             this.Controls.Add(addBtn);
             mover.SendToBack();
 
-            noteData = new NoteData(Location, textBox.Text);
+            if(noteData == null)
+            {
+                noteData = new NoteData(Location, textBox.Text);
+            }
+
+            FormClosed += StickyNote_FormClosed;
+        }
+
+        public void saveData()
+        {
+            noteData.notePos = Location;
+            noteData.noteText = textBox.Text;
+
+            parent.saveData(this, noteData);
         }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            parent.saveData(noteData);
+            saveData();
         }
 
         private void StickyNote_FormClosed(object sender, FormClosedEventArgs e)
@@ -99,6 +112,7 @@ namespace AdvStickyNotes
         private void Mover_MouseUp(object sender, MouseEventArgs e)
         {
             isMouseDown = false;
+            saveData();
         }
 
         private void Mover_MouseMove(object sender, MouseEventArgs e)
