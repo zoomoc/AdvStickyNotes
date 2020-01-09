@@ -38,6 +38,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "StickyNote";
             this.ShowInTaskbar = false;
+            this.Load += new System.EventHandler(this.StickyNote_Load);
             this.ResumeLayout(false);
 
         }

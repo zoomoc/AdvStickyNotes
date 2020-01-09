@@ -18,41 +18,29 @@ namespace AdvStickyNotes
         private Stream data;
         private BinaryFormatter serializer;
         private Timer saveTimer;
+        private bool isInitialized = false;
         public AdvStickyNotes()
         {
             InitializeComponent();
-        }
-        private void AdvStickyNotes_Load(object sender, EventArgs e)
-        {
-            serializer = new BinaryFormatter();
-            try
-            {
-                data = new FileStream("data.dat", FileMode.OpenOrCreate);
-                if (data.Length != 0)
-                {
-                    List<NoteData> noteDatas = new List<NoteData>((List<NoteData>)serializer.Deserialize(data));
-                    stickyNotes = new List<StickyNote>();
-
-                    foreach (NoteData noteData in noteDatas)
-                    {
-                        stickyNotes.Add(new StickyNote(this));
-                        stickyNotes.Last().noteData = noteData;
-
-                        MessageBox.Show("noteData: " + noteData.ToString());
-                    }
-                    MessageBox.Show("불러오기 완료!");
-                }
-                data.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("저장된 데이터 읽기 오류!\n오류메시지: " + ex.Message);
-                throw ex;
-            }
 
             saveTimer = new Timer();
             saveTimer.Interval = 2000;
             saveTimer.Tick += SaveTimer_Tick;
+
+            serializer = new BinaryFormatter();
+            data = new FileStream("data.dat", FileMode.OpenOrCreate);
+            if (data.Length != 0)
+            {
+                List<NoteData> noteDatas = new List<NoteData>((List<NoteData>)serializer.Deserialize(data));
+                stickyNotes = new List<StickyNote>();
+
+                foreach (NoteData noteData in noteDatas)
+                {
+                    stickyNotes.Add(new StickyNote(this, noteData));
+                }
+                MessageBox.Show("불러오기 완료!");
+            }
+            data.Close();
         }
         private void AdvStickyNotes_Shown(object sender, EventArgs e)
         {
@@ -73,9 +61,12 @@ namespace AdvStickyNotes
                     stickyNote.Show();
                 }
             }
+
+            isInitialized = true;
         }
-        public void saveData(StickyNote sender, NoteData noteData)
+        public void saveData(StickyNote sender)
         {
+            if (isInitialized == false) return;
             saveTimer.Stop();
             saveTimer.Start();
         }
@@ -109,6 +100,11 @@ namespace AdvStickyNotes
         {
             stickyNotes.Add(new StickyNote(this));
             stickyNotes.Last().Show();
+        }
+
+        public void deleteNote(StickyNote stickyNote)
+        {
+
         }
     }
 }

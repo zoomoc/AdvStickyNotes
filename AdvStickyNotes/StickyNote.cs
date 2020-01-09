@@ -16,10 +16,11 @@ namespace AdvStickyNotes
         private Point mouseDownPoint;
         private int titleHeight = 30;
 
-        RichTextBox textBox;
+        TextBox textBox;
         public NoteData noteData;
+        public bool isDeleted = false;
 
-        public StickyNote(AdvStickyNotes p, NoteData nd = new NoteData())
+        public StickyNote(AdvStickyNotes p)
         {
 
             InitializeComponent();
@@ -44,15 +45,15 @@ namespace AdvStickyNotes
 
 
             //메모 영역 텍스트박스
-            textBox = new RichTextBox
+            textBox = new TextBox
             {
                 Location = new Point(0, titleHeight),
                 Width = Size.Width,
                 Height = Size.Height,
                 BorderStyle = BorderStyle.None,
-                BackColor = Color.FromArgb(253, 253, 201)
+                BackColor = Color.FromArgb(253, 253, 201),
+                Multiline = true
             };
-            textBox.TextChanged += TextBox_TextChanged;
 
             //닫기 버튼
             Button closeBtn = new Button
@@ -89,15 +90,27 @@ namespace AdvStickyNotes
                 noteData = new NoteData(Location, textBox.Text);
             }
 
+            textBox.TextChanged += TextBox_TextChanged;
             FormClosed += StickyNote_FormClosed;
         }
+        private void StickyNote_Load(object sender, EventArgs e)
+        {
+            
+        }
+        public StickyNote(AdvStickyNotes p, NoteData nd) : this(p)
+        {
+            noteData = nd;
 
+            Location = noteData.notePos;
+            textBox.Text = noteData.noteText;
+        }
         public void saveData()
         {
+            
             noteData.notePos = Location;
             noteData.noteText = textBox.Text;
 
-            parent.saveData(this, noteData);
+            parent.saveData(this);
         }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -135,6 +148,11 @@ namespace AdvStickyNotes
         }
         private void CloseBtn_Click(object sender, EventArgs e)
         {
+            DialogResult dr = MessageBox.Show("이 노트를 삭제할까요?", "노트 삭제 확인", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if(dr == DialogResult.Yes)
+            {
+                
+            }
             Close();       
         }
     }
